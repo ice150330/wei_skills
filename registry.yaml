@@ -1,0 +1,102 @@
+version: "3.1"
+name: opencode Skills
+architecture: simplified
+
+# ============================================================
+# 根本指令 - 每次对话必须加载
+# ============================================================
+core:
+  root-directives:
+    path: root-directives
+    description: 根本指令——中文优先、项目结构、技能路由。每次对话第一个加载
+    priority: absolute
+    always: true
+
+  assessor:
+    path: assessor
+    description: 任务复杂度评估——自动判断简单/中等/复杂，路由到对应模式
+    priority: highest
+    always: true
+
+# ============================================================
+# 协调 - 多专家场景
+# ============================================================
+coordination:
+  coordinator:
+    path: coordinator
+    description: 专家协调器——管理多专家通信和冲突解决
+    trigger: experts_count > 1
+
+# ============================================================
+# 执行模式 - 由评估器选择
+# ============================================================
+modes:
+  quick:
+    path: modes/quick
+    description: 简单任务（<10分钟），直接执行，无需规划
+    complexity: simple
+    time: "<10min"
+    experts: 0
+
+  normal:
+    path: modes/normal
+    description: 中等任务（10分钟-4小时），简短规划+1-2专家
+    complexity: moderate
+    time: "10min-4hr"
+    experts: "1-2"
+
+  deep:
+    path: modes/deep
+    description: 复杂任务（4小时+），完整规划+多专家分阶段执行
+    complexity: complex
+    time: "4hr+"
+    experts: "all"
+
+# ============================================================
+# 专家角色 - 按需加载
+# ============================================================
+experts:
+  pm:
+    path: experts/pm
+    icon: "🎯"
+    phase: planning
+    keywords: [需求, 功能, 用户故事, 规格, 范围, 里程碑, 优先级]
+
+  architect:
+    path: experts/architect
+    icon: "🏗️"
+    phase: planning
+    keywords: [架构, 设计, 系统, API, 数据库, 模式, 微服务]
+
+  designer:
+    path: experts/designer
+    icon: "🎨"
+    phase: planning
+    keywords: [设计, UI, 界面, 交互, 用户体验, 布局]
+    plugins: [frontend-design]
+
+  dev:
+    path: experts/dev
+    icon: "⚡"
+    phase: implementation
+    keywords: [实现, 代码, 开发, 构建, 创建, 编写, 修复, 重构, 优化]
+
+  qa:
+    path: experts/qa
+    icon: "🧪"
+    phase: quality
+    keywords: [测试, 审查, Bug, 质量, 验证]
+    plugins: [code-review, code-simplifier]
+
+  devops:
+    path: experts/devops
+    icon: "🚀"
+    phase: deployment
+    keywords: [部署, CI/CD, 服务器, 运维, Docker, 容器]
+
+# ============================================================
+# 共享资源
+# ============================================================
+shared:
+  tools: shared/tools.md
+  patterns: shared/patterns.md

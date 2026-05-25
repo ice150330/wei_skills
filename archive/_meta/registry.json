@@ -1,0 +1,74 @@
+{
+  "version": "2.0",
+  "last_updated": "2026-04-10",
+  "architecture": "layered",
+  "layers": {
+    "core": {
+      "description": "核心层 - 总是加载的基础技能",
+      "skills": [
+        {
+          "name": "complexity-assessor",
+          "path": "_core/complexity-assessor",
+          "priority": "critical",
+          "always_active": true,
+          "description": "任务复杂度评估器，决定使用哪个工作流层级"
+        }
+      ]
+    },
+    "workflows": {
+      "description": "工作流层 - 根据复杂度动态选择",
+      "skills": [
+        {
+          "name": "simple-workflow",
+          "path": "_workflows/simple",
+          "complexity": "simple",
+          "roles": 2,
+          "time": "1-2 hours"
+        },
+        {
+          "name": "standard-workflow",
+          "path": "_workflows/standard",
+          "complexity": "moderate",
+          "roles": 4,
+          "time": "4 hours - 2 days"
+        },
+        {
+          "name": "full-workflow",
+          "path": "_workflows/full",
+          "complexity": "complex",
+          "roles": 7,
+          "time": "3-7 days"
+        }
+      ]
+    },
+    "roles": {
+      "description": "角色层 - 按需加载的独立角色",
+      "skills": [
+        {"name": "pm-agent", "path": "_roles/pm", "icon": "🎯"},
+        {"name": "architect-agent", "path": "_roles/architect", "icon": "🏗️"},
+        {"name": "designer-agent", "path": "_roles/designer", "icon": "🎨"},
+        {"name": "frontend-agent", "path": "_roles/frontend", "icon": "⚡"},
+        {"name": "backend-agent", "path": "_roles/backend", "icon": "🔧"},
+        {"name": "qa-agent", "path": "_roles/qa", "icon": "🧪"},
+        {"name": "devops-agent", "path": "_roles/devops", "icon": "🚀"}
+      ]
+    },
+    "legacy": {
+      "description": "遗留层 - 旧版本技能，逐步迁移",
+      "skills": [
+        {"name": "core-workflow", "path": "core-workflow", "status": "migrating"},
+        {"name": "code-quality", "path": "code-quality", "status": "migrating"},
+        {"name": "safe-operations", "path": "safe-operations", "status": "migrating"},
+        {"name": "ui-ux-design", "path": "ui-ux-design", "status": "migrating"},
+        {"name": "project-dev-workflow", "path": "project-dev-workflow", "status": "migrating"}
+      ],
+      "note": "这些技能将逐步迁移到新架构，目前保持兼容"
+    }
+  },
+  "routing_logic": {
+    "step1": "complexity-assessor 评估任务复杂度",
+    "step2": "根据复杂度选择 workflow 层",
+    "step3": "workflow 动态加载所需 role 层",
+    "step4": "role 调用具体技能和插件"
+  }
+}

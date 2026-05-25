@@ -1,0 +1,87 @@
+# 评估器启发式规则
+# 用于提高复杂度评估准确度
+
+rules:
+  # 代码量规则
+  code_size:
+    simple:
+      lines: "<50"
+      files: 1
+    moderate:
+      lines: "50-500"
+      files: "2-5"
+    complex:
+      lines: ">500"
+      files: ">5"
+
+  # 关键词权重（解决冲突）
+  keywords:
+    # 高权重 - 通常表示复杂任务
+    complex:
+      - "platform": 0.9
+      - "system": 0.8
+      - "architecture": 0.9
+      - "migrate": 0.85
+      - "refactor": 0.75
+      - "integration": 0.8
+
+    # 中等权重
+    moderate:
+      - "feature": 0.6
+      - "api": 0.55
+      - "component": 0.5
+      - "validation": 0.45
+
+    # 低权重 - 通常表示简单任务
+    simple:
+      - "fix typo": 0.1
+      - "print": 0.1
+      - "format": 0.15
+      - "rename": 0.2
+
+  # 文件类型规则
+  file_types:
+    simple:
+      - ".md"
+      - ".txt"
+      - ".json"  # 配置修改
+    moderate:
+      - ".js"
+      - ".ts"
+      - ".jsx"
+      - ".tsx"
+      - ".py"
+    complex:
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - ".tf"  # Terraform
+      - "kubernetes"
+
+  # 上下文规则（需要多文件信息）
+  context:
+    require_git_status:
+      - "fix"
+      - "bug"
+      - "optimize"
+    require_directory_scan:
+      - "new project"
+      - "create"
+      - "build"
+
+# 评分阈值
+thresholds:
+  simple: 0.3
+  moderate: 0.7
+  complex: 0.9
+
+# 置信度计算
+confidence:
+  factors:
+    - keyword_match: 0.4
+    - file_count: 0.3
+    - historical_accuracy: 0.3
+
+  levels:
+    high: ">0.8"    # 直接执行
+    medium: "0.5-0.8"  # 询问确认
+    low: "<0.5"    # 请求更多信息

@@ -1,0 +1,415 @@
+# Claude 技能自动触发器配置
+# 基于场景、关键词、文件类型等自动触发合适的技能
+
+version: "1.0"
+triggers:
+  # ==================== CODE-QUALITY 触发器 ====================
+  - skill: code-quality
+    priority: high
+    conditions:
+      # 调试相关
+      - type: keyword
+        patterns:
+          - "bug"
+          - "fix"
+          - "debug"
+          - "错误"
+          - "修复"
+          - "调试"
+          - "test fail"
+          - "测试失败"
+          - "not working"
+          - "broken"
+          - "issue"
+          - "problem"
+          - "crash"
+          - "exception"
+          - "error"
+        action: apply_systematic_debugging
+
+      # 测试相关
+      - type: keyword
+        patterns:
+          - "test"
+          - "测试"
+          - "TDD"
+          - "unit test"
+          - "integration test"
+          - "test case"
+          - "测试用例"
+        action: apply_tdd
+
+      # 代码审查请求
+      - type: keyword
+        patterns:
+          - "review"
+          - "审查"
+          - "code review"
+          - "代码审查"
+          - "检查代码"
+          - "看一下这段代码"
+          - "优化代码"
+          - "重构"
+          - "refactor"
+        action: apply_code_review
+
+      # 完成声明检测（验证触发）
+      - type: keyword
+        patterns:
+          - "完成了"
+          - "做好了"
+          - "done"
+          - "complete"
+          - "finished"
+          - "测试通过"
+          - "可以提交了"
+          - "准备提交"
+        action: apply_verification
+
+      # 文件类型触发
+      - type: file_extension
+        extensions: [".test.js", ".test.ts", ".test.py", ".spec.js", ".spec.ts", ".spec.py"]
+        action: apply_tdd
+
+  # ==================== SAFE-OPERATIONS 触发器 ====================
+  - skill: safe-operations
+    priority: critical
+    conditions:
+      # 删除操作
+      - type: keyword
+        patterns:
+          - "delete"
+          - "删除"
+          - "remove"
+          - "移除"
+          - "rm -rf"
+          - "del "
+          - "rmdir"
+          - "Remove-Item"
+          - "clean"
+          - "清理"
+          - "清空"
+        action: apply_safe_delete
+
+      # Git提交相关
+      - type: keyword
+        patterns:
+          - "commit"
+          - "提交"
+          - "git add"
+          - "push"
+          - "推送"
+          - "git status"
+          - "准备提交"
+          - "提交代码"
+        action: apply_git_commit_check
+
+      # Worktree操作
+      - type: keyword
+        patterns:
+          - "worktree"
+          - "工作树"
+          - "git worktree"
+          - "isolated workspace"
+          - "隔离工作区"
+        action: apply_worktree_safety
+
+  # ==================== CORE-WORKFLOW 触发器 ====================
+  - skill: core-workflow
+    priority: high
+    conditions:
+      # 复杂任务识别
+      - type: keyword
+        patterns:
+          - "plan"
+          - "计划"
+          - "implement"
+          - "实现"
+          - "开发"
+          - "功能"
+          - "feature"
+          - "project"
+          - "项目"
+          - "task"
+          - "任务"
+          - "multi-step"
+          - "多步骤"
+          - "workflow"
+          - "流程"
+        action: start_workflow_planning
+
+      # 设计阶段
+      - type: keyword
+        patterns:
+          - "design"
+          - "设计"
+          - "architecture"
+          - "架构"
+          - "方案"
+          - "brainstorm"
+          - "头脑风暴"
+          - "explore"
+          - "探索"
+        action: start_brainstorming
+
+      # 执行计划
+      - type: keyword
+        patterns:
+          - "execute"
+          - "执行"
+          - "开始开发"
+          - "开始实现"
+          - "按计划"
+          - "follow the plan"
+        action: start_plan_execution
+
+      # 完成任务
+      - type: keyword
+        patterns:
+          - "finish"
+          - "完成"
+          - "wrap up"
+          - "结束"
+          - "close"
+          - "合并"
+          - "merge"
+          - "PR"
+          - "pull request"
+        action: start_finishing_workflow
+
+  # ==================== UI-UX-DESIGN 触发器 ====================
+  - skill: ui-ux-design
+    priority: medium
+    conditions:
+      # UI相关
+      - type: keyword
+        patterns:
+          - "UI"
+          - "界面"
+          - "design"
+          - "设计"
+          - "layout"
+          - "布局"
+          - "component"
+          - "组件"
+          - "button"
+          - "表单"
+          - "form"
+          - "page"
+          - "页面"
+          - "style"
+          - "样式"
+          - "CSS"
+          - "Tailwind"
+          - "theme"
+          - "主题"
+          - "color"
+          - "颜色"
+          - "font"
+          - "字体"
+          - "icon"
+          - "图标"
+        action: apply_ui_design
+
+      # UX相关
+      - type: keyword
+        patterns:
+          - "UX"
+          - "experience"
+          - "体验"
+          - "interaction"
+          - "交互"
+          - "animation"
+          - "动画"
+          - "responsive"
+          - "响应式"
+          - "accessibility"
+          - "无障碍"
+        action: apply_ux_guidelines
+
+      # 前端框架
+      - type: keyword
+        patterns:
+          - "React"
+          - "Vue"
+          - "Angular"
+          - "Svelte"
+          - "Next.js"
+          - "Nuxt"
+          - "frontend"
+          - "前端"
+          - "web app"
+          - "website"
+          - "landing page"
+          - "dashboard"
+        action: apply_frontend_stack
+
+      # 移动开发
+      - type: keyword
+        patterns:
+          - "mobile"
+          - "移动"
+          - "app"
+          - "iOS"
+          - "Android"
+          - "React Native"
+          - "Flutter"
+          - "SwiftUI"
+        action: apply_mobile_design
+
+      # 文件类型触发
+      - type: file_extension
+        extensions: [".jsx", ".tsx", ".vue", ".svelte", ".css", ".scss", ".html"]
+        action: apply_ui_design
+
+  # ==================== 复合场景触发器 ====================
+  # 多个技能组合触发
+
+  # 新项目启动
+  - skill: composite
+    name: new_project_startup
+    priority: high
+    conditions:
+      - type: keyword
+        patterns:
+          - "new project"
+          - "新项目"
+          - "start project"
+          - "创建项目"
+          - "init project"
+          - "初始化项目"
+    actions:
+      - skill: core-workflow
+        action: start_workflow_planning
+      - skill: safe-operations
+        action: apply_git_commit_check
+
+  # Bug修复流程
+  - skill: composite
+    name: bug_fix_workflow
+    priority: critical
+    conditions:
+      - type: keyword
+        patterns:
+          - "fix bug"
+          - "修复bug"
+          - "bug fix"
+          - "解决bug"
+          - "fix issue"
+          - "解决问题"
+    actions:
+      - skill: code-quality
+        action: apply_systematic_debugging
+      - skill: code-quality
+        action: apply_tdd
+      - skill: safe-operations
+        action: apply_git_commit_check
+
+  # 代码重构
+  - skill: composite
+    name: refactoring_workflow
+    priority: high
+    conditions:
+      - type: keyword
+        patterns:
+          - "refactor"
+          - "重构"
+          - "rewrite"
+          - "重写"
+          - "clean up"
+          - "清理代码"
+          - "improve code"
+          - "改进代码"
+    actions:
+      - skill: code-quality
+        action: apply_code_review
+      - skill: code-quality
+        action: apply_tdd
+      - skill: safe-operations
+        action: apply_git_commit_check
+
+  # UI开发完整流程
+  - skill: composite
+    name: ui_development_workflow
+    priority: medium
+    conditions:
+      - type: keyword
+        patterns:
+          - "build UI"
+          - "构建界面"
+          - "create component"
+          - "创建组件"
+          - "design page"
+          - "设计页面"
+          - "frontend development"
+          - "前端开发"
+    actions:
+      - skill: ui-ux-design
+        action: apply_ui_design
+      - skill: code-quality
+        action: apply_tdd
+      - skill: code-quality
+        action: apply_code_review
+
+  # 功能开发完整流程
+  - skill: composite
+    name: feature_development_workflow
+    priority: high
+    conditions:
+      - type: keyword
+        patterns:
+          - "new feature"
+          - "新功能"
+          - "add feature"
+          - "添加功能"
+          - "implement feature"
+          - "实现功能"
+          - "develop feature"
+          - "开发功能"
+    actions:
+      - skill: core-workflow
+        action: start_workflow_planning
+      - skill: code-quality
+        action: apply_tdd
+      - skill: safe-operations
+        action: apply_git_commit_check
+
+# 触发器执行规则
+execution_rules:
+  # 优先级处理
+  priority_order: [critical, high, medium, low]
+
+  # 冲突解决
+  conflict_resolution:
+    # 相同技能多次触发，只执行一次
+    deduplicate: true
+    # 高优先级覆盖低优先级
+    higher_priority_wins: true
+
+  # 复合技能处理
+  composite:
+    # 按顺序执行
+    sequential: true
+    # 允许跳过已执行的
+    skip_executed: true
+
+  # 上下文保持
+  context:
+    # 保持技能上下文
+    keep_context: true
+    # 上下文超时（分钟）
+    timeout: 30
+
+# 自动触发提示模板
+auto_trigger_prompts:
+  code-quality: |
+    我将使用 code-quality 技能来确保代码质量。
+
+  safe-operations: |
+    我将使用 safe-operations 技能来确保操作安全。
+
+  core-workflow: |
+    我将使用 core-workflow 技能来管理开发流程。
+
+  ui-ux-design: |
+    我将使用 ui-ux-design 技能来进行专业设计。
