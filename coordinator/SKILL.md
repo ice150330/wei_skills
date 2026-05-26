@@ -1,26 +1,26 @@
 ---
 name: coordinator
-description: Expert coordinator. Manages communication between experts, resolves conflicts, and orchestrates collaborative tasks.
+description: 专家协调器，负责多专家通信、冲突解决和协作编排。
 triggers:
   - experts_count: ">1"
   - mode: [normal, deep]
 ---
 
-# Expert Coordinator
+# 专家协调器
 
-## Purpose
+## 目的
 
-When multiple experts are active, coordinate their work and resolve conflicts.
+当多个专家同时参与任务时，协调工作边界、交接信息和冲突处理，避免重复劳动或方向不一致。
 
-## Communication Protocol
+## 通信协议
 
-### Message Format
+### 消息格式
 
 ```yaml
 message:
   from: expert_name      # 发送者
   to: expert_name | all  # 接收者
-  type: request | response | broadcast
+  type: request | response | broadcast | conflict
   priority: low | normal | high | critical
   content: string
   context:
@@ -28,75 +28,65 @@ message:
     phase: planning | implementation | quality | deployment
 ```
 
-### Message Types
+### 消息类型
 
-| Type | Use Case | Example |
-|------|----------|---------|
-| `request` | Ask another expert | PM asks Architect for API design |
-| `response` | Reply to request | Architect responds with design |
-| `broadcast` | Notify all experts | "Phase 1 complete" |
-| `conflict` | Disagreement detected | PM vs Architect on scope |
+| Type | 使用场景 | 示例 |
+|------|----------|------|
+| `request` | 请求其他专家输入 | PM 请求 Architect 给出 API 设计 |
+| `response` | 回复请求 | Architect 返回设计方案 |
+| `broadcast` | 通知所有专家 | “阶段 1 已完成” |
+| `conflict` | 发现分歧 | PM 与 Architect 对范围判断不同 |
 
-## Conflict Resolution
+## 冲突解决
 
-### Conflict Types
+### 冲突类型
 
 ```yaml
 conflicts:
-  scope:      # PM vs others
-    resolver: pm  # PM has final say
-
-  technical:  # Architect vs Dev
-    resolver: architect  # Architect decides
-
-  implementation:  # Dev vs QA
-    resolver: discussion  # Discuss and agree
-
-  priority:   # Any disagreement on order
-    resolver: pm  # PM prioritizes
+  scope:
+    resolver: pm
+  technical:
+    resolver: architect
+  implementation:
+    resolver: discussion
+  priority:
+    resolver: pm
 ```
 
-### Resolution Flow
+| 冲突类型 | 默认处理者 | 原则 |
+|----------|------------|------|
+| 范围冲突 | PM | 以用户目标和验收标准为准 |
+| 技术冲突 | Architect | 以架构一致性和长期维护为准 |
+| 实现冲突 | 讨论达成一致 | 以简单、可验证、低风险为准 |
+| 优先级冲突 | PM | 以用户价值和阻塞关系为准 |
+
+### 处理流程
 
 ```
-Conflict Detected
-       ↓
-┌────────────────┐
-│ Identify Type  │
-└────────┬───────┘
-         ↓
-┌────────────────┐
-│ Auto Resolve?  │
-└────────┬───────┘
-         ↓
-    ┌────┴────┐
-   Yes        No
-    │          │
-    ▼          ▼
- Apply Rule  Escalate
-    │       to User
-    └────┬─────┘
-         ↓
-   Record Decision
+发现冲突
+   ↓
+识别类型
+   ↓
+能否按规则自动解决？
+   ↓
+是 → 应用规则 → 记录决定
+否 → 向用户澄清 → 记录决定
 ```
 
-## Expert Activation Rules
+## 专家激活规则
 
 ```yaml
 activation:
-  # 顺序激活（某些专家需要等前一个完成）
   sequential:
     planning: [pm, architect, designer]
     implementation: [dev]
     quality: [qa]
     deployment: [devops]
 
-  # 并行激活（可同时工作）
   parallel:
-    implementation: [frontend, backend]  # 如果是分开的专家
-    review: [architect, qa]  # 代码审查可以并行
+    implementation: [frontend, backend]
+    review: [architect, qa]
 
-  # 条件激活
   conditional:
     designer:
       if: "ui_changes > 0"
@@ -106,9 +96,9 @@ activation:
       if: "code_changes > 50_lines"
 ```
 
-## Handoff Protocol
+## 交接协议
 
-When one expert finishes and another starts:
+一个专家完成、另一个专家开始时，应保留必要上下文：
 
 ```yaml
 handoff:
@@ -124,43 +114,45 @@ handoff:
     - timeline
 ```
 
-## Coordination in Different Modes
+## 不同模式下的协调
 
-### Normal Mode (1-2 experts)
-- Light coordination
-- Direct communication
-- User resolves conflicts
+### Normal Mode（1-2 个专家）
 
-### Deep Mode (all experts)
-- Full coordination
-- Structured phases
-- Auto conflict resolution
-- Regular sync points
+- 轻量协调。
+- 直接交接。
+- 分歧优先由用户确认。
 
-## Example: Deep Mode Coordination
+### Deep Mode（多专家）
+
+- 分阶段协调。
+- 明确质量门禁。
+- 按冲突规则自动处理可确定的问题。
+- 在关键节点同步。
+
+## Deep Mode 协调示例
 
 ```
-Phase 1: Planning
-  PM: Define requirements
-    ↓ handoff
-  Architect: Design system
-    ↓ handoff
-  Designer: Create UI
-    ↓ sync
-  [All planning experts sync]
+阶段 1：规划
+  PM：明确需求
+    ↓ 交接
+  Architect：设计系统
+    ↓ 交接
+  Designer：设计 UI
+    ↓ 同步
+  [规划专家同步]
 
-Phase 2: Implementation
-  Dev: Write code
-    ↓ broadcast
-  QA: Prepare tests (parallel)
+阶段 2：实现
+  Dev：编写代码
+    ↓ 广播
+  QA：并行准备测试
 
-Phase 3: Quality
-  QA: Review and test
-    ↓ request
-  Dev: Fix issues
+阶段 3：质量
+  QA：审查和测试
+    ↓ 请求
+  Dev：修复问题
 
-Phase 4: Deployment
-  DevOps: Deploy
-    ↓ broadcast
-  [All experts notified]
+阶段 4：部署
+  DevOps：部署
+    ↓ 广播
+  [通知所有专家]
 ```

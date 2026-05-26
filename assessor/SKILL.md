@@ -1,212 +1,215 @@
 ---
 name: assessor
-description: Task complexity assessor with multi-factor scoring and confidence levels. Analyzes requests using keywords, file context, and historical accuracy to determine execution mode.
+description: 任务复杂度评估器，基于关键词、文件上下文和历史准确度判断执行模式。
 triggers:
   - always: true
   - priority: highest
 ---
 
-# Task Assessor
+# 任务评估器
 
-## Purpose
+## 目的
 
-Fast complexity assessment (under 3 seconds) with **confidence scoring** to route tasks accurately.
+在 3 秒内完成复杂度评估，并用置信度分数把任务路由到合适的执行模式。
 
-## Assessment Factors
+## 评估因素
 
 ```
 Score = (keyword_match × 0.4) + (file_complexity × 0.3) + (historical × 0.3)
 ```
 
-### 1. Keyword Analysis (权重 40%)
+### 1. 关键词分析（权重 40%）
 
-Load `heuristics.yaml` for weighted keywords:
-- Complex keywords ("platform", "architecture"): +0.8-0.9
-- Moderate keywords ("feature", "api"): +0.5-0.6
-- Simple keywords ("fix typo", "print"): +0.1-0.2
+读取 `heuristics.yaml` 中的加权关键词：
+- 复杂关键词（如 `platform`、`architecture`、`平台`、`架构`）：+0.8-0.9
+- 中等关键词（如 `feature`、`api`、`功能`、`接口`）：+0.5-0.6
+- 简单关键词（如 `fix typo`、`print`、`错别字`、`打印`）：+0.1-0.2
 
-### 2. File Context (权重 30%)
+### 2. 文件上下文（权重 30%）
 
 ```
 if git_status shows:
-  - 1 file, <50 lines → Simple
-  - 2-5 files, 50-500 lines → Moderate
-  - 5+ files, >500 lines → Complex
+  - 1 个文件，<50 行 → 简单
+  - 2-5 个文件，50-500 行 → 中等
+  - 5+ 个文件，>500 行 → 复杂
 ```
 
-### 3. Historical Accuracy (权重 30%)
+### 3. 历史准确度（权重 30%）
 
-Track past assessments:
-- Was this type of task assessed correctly?
-- Adjust based on actual execution time
+跟踪过往评估结果：
+- 同类任务之前是否评估准确
+- 根据实际执行时间和文件影响范围调整判断
 
-## Confidence Levels
+## 置信度等级
 
-| Level | Range | Action |
-|-------|-------|--------|
-| **High** | >0.8 | Direct routing, no confirmation |
-| **Medium** | 0.5-0.8 | Brief confirmation with user |
-| **Low** | <0.5 | Ask clarifying questions |
+| 等级 | 范围 | 动作 |
+|------|------|------|
+| 高 | >0.8 | 直接路由，无需确认 |
+| 中 | 0.5-0.8 | 简短向用户确认 |
+| 低 | <0.5 | 先询问澄清问题 |
 
-## Decision Flow
+## 决策流程
 
 ```
-User Input
+用户输入
     ↓
-┌─────────────────┐
-│ Calculate Score │
-│ Load heuristics │
-└────────┬────────┘
-         ↓
-┌─────────────────┐
-│ Check Confidence│
-└────────┬────────┘
-         ↓
-    ┌────┴────┐
-   High     Medium/Low
-    │          │
-    ▼          ▼
- Route    Confirm/Ask
-    │          │
-    └────┬─────┘
-         ↓
-   Activate Mode
+┌────────────┐
+│ 计算分数   │
+│ 读取规则   │
+└─────┬──────┘
+      ↓
+┌────────────┐
+│ 检查置信度 │
+└─────┬──────┘
+      ↓
+ ┌────┴────┐
+ 高       中/低
+ │         │
+ ▼         ▼
+路由    确认/询问
+ │         │
+ └────┬────┘
+      ↓
+  激活模式
 ```
 
-## Feedback Loop
+## 反馈循环
 
-After task completion:
-1. Record actual complexity
-2. Compare with assessment
-3. Adjust weights if needed
-4. Update historical accuracy
+任务完成后：
+1. 记录实际复杂度。
+2. 对比初始评估。
+3. 必要时调整权重。
+4. 更新历史准确度。
 
-## Assessment Criteria
+## 评估标准
 
-### Quick Mode (< 10 minutes)
-**Indicators:**
-- Single command or question
-- Under 20 lines of code
-- Existing solution available
-- No design decisions needed
+### Quick Mode（少于 10 分钟）
 
-**Examples:**
-- "How to print in Python?"
-- "Fix this typo"
-- "Run the tests"
-- "Explain this error"
+**判断信号：**
+- 单个命令或单个问题
+- 少于 20 行代码
+- 已有明确解决方案
+- 不需要设计决策
 
-**Action:** Direct answer, no workflow, no planning.
+**示例：**
+- “Python 怎么打印？”
+- “修复这个错别字”
+- “运行测试”
+- “解释这个错误”
 
----
+**动作：** 直接回答或执行，不启动完整工作流。
 
-### Normal Mode (10 minutes - 4 hours)
-**Indicators:**
-- 1-3 files affected
-- Single feature or component
-- Clear requirements
-- Existing codebase context
+### Normal Mode（10 分钟 - 4 小时）
 
-**Examples:**
-- "Add email validation to the form"
-- "Create a user list API"
-- "Fix this React component bug"
-- "Optimize this database query"
+**判断信号：**
+- 影响 1-3 个文件
+- 单一功能或组件
+- 需求清晰
+- 有现有代码上下文
 
-**Action:** Use expert(s) with brief planning (5 min).
+**示例：**
+- “给表单加邮箱校验”
+- “创建用户列表 API”
+- “修复这个 React 组件 bug”
+- “优化这个数据库查询”
 
----
+**动作：** 简短规划，按需启用 1-2 个专家。
 
-### Deep Mode (4+ hours)
-**Indicators:**
-- 4+ files or new project
-- Architecture decisions required
-- Multiple components/integration
-- Unclear or evolving requirements
+### Deep Mode（4 小时以上）
 
-**Examples:**
-- "Build an e-commerce platform"
-- "Refactor the authentication system"
-- "Design a real-time chat feature"
-- "Create a new mobile app"
+**判断信号：**
+- 影响 4+ 个文件或新项目
+- 需要架构决策
+- 涉及多个组件或集成
+- 需求不清晰或持续变化
 
-**Action:** Full planning with multiple experts, phased execution.
+**示例：**
+- “构建电商平台”
+- “重构认证系统”
+- “设计实时聊天功能”
+- “创建新的移动应用”
 
-## Quick Decision Tree
+**动作：** 完整规划，多专家分阶段执行。
+
+## 快速决策树
 
 ```
-1. Is it a question about existing code?
-   YES → Quick
+1. 是否是关于现有代码的简单问题？
+   是 → Quick
 
-2. Is it a single file change under 50 lines?
-   YES → Quick
+2. 是否是单文件、少于 50 行的修改？
+   是 → Quick
 
-3. Does it require design/architecture decisions?
-   YES → Go to 5
+3. 是否需要设计或架构决策？
+   是 → 跳到 5
 
-4. Does it span multiple modules or need coordination?
-   YES → Deep
-   NO → Normal
+4. 是否跨多个模块或需要协调？
+   是 → Deep
+   否 → Normal
 
-5. Is it a greenfield project or major refactor?
-   YES → Deep
-   NO → Normal
+5. 是否是新项目或大型重构？
+   是 → Deep
+   否 → Normal
 ```
 
-## Response Patterns
+## 响应模板
 
-### Quick Response
+### Quick 响应
+
 ```
-This is a quick task. I'll handle it directly:
+这是一个简单任务，我会直接处理：
 
-[Direct solution]
+[直接解决方案]
 
-✅ Done (X seconds)
-```
-
-### Normal Response
-```
-This is a normal complexity task. I'll use [expert] mode:
-
-Plan (5 min):
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-
-[Execute...]
-
-✅ Complete
+完成（X 秒）
 ```
 
-### Deep Response
+### Normal 响应
+
 ```
-This is a complex project. I'll use deep mode with full planning:
+这是一个中等复杂度任务，我会使用 [expert] 模式：
 
-📋 Phase 1: Requirements & Design
-📋 Phase 2: Implementation
-📋 Phase 3: Quality Assurance
-📋 Phase 4: Deployment
+简短计划：
+1. [步骤 1]
+2. [步骤 2]
+3. [步骤 3]
 
-[Begin Phase 1...]
+[执行]
+
+完成
 ```
 
-## Context Awareness
+### Deep 响应
 
-The assessor considers:
-- Current directory (is there a CLAUDE.md?)
-- Git status (existing codebase vs new)
-- File types in context
-- User's historical preferences
-- Recent conversation context
-
-## Adaptation
-
-If during execution complexity changes:
 ```
-Started as Normal, but discovered:
-- Requires database migration
-- Needs API versioning
-- Affects 5+ files
+这是一个复杂项目，我会使用 Deep Mode 进行完整规划：
 
-→ Escalating to Deep mode
+阶段 1：需求与设计
+阶段 2：实现
+阶段 3：质量保证
+阶段 4：部署
+
+[开始阶段 1]
+```
+
+## 上下文感知
+
+评估器会考虑：
+- 当前目录是否存在 `CLAUDE.md`
+- Git 状态：已有代码库还是新项目
+- 相关文件类型
+- 用户历史偏好
+- 当前对话上下文
+
+## 动态调整
+
+如果执行过程中发现复杂度变化，应及时切换模式：
+
+```
+初始评估为 Normal，但发现：
+- 需要数据库迁移
+- 需要 API 版本管理
+- 影响 5+ 个文件
+
+→ 升级到 Deep Mode
 ```
