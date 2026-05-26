@@ -1,5 +1,5 @@
-version: "3.1"
-name: opencode Skills
+version: "3.2"
+name: claude-code Skills
 architecture: simplified
 
 # ============================================================
