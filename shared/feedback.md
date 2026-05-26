@@ -11,7 +11,6 @@ feedback_record:
   task_id: unique_id
   timestamp: ISO8601
 
-  # 评估信息
   assessment:
     initial_mode: quick | normal | deep
     confidence: 0.0-1.0
@@ -20,34 +19,29 @@ feedback_record:
       file_complexity: 0.0-1.0
       historical: 0.0-1.0
 
-  # 实际执行
   execution:
     actual_mode: quick | normal | deep
-    final_mode: quick | normal | deep  # 如果有切换
+    final_mode: quick | normal | deep
     files_affected: number
     lines_changed: number
     time_minutes: number
     experts_involved: [list]
 
-  # 准确度评估
   accuracy:
-    mode_correct: boolean  # 初始模式是否正确
+    mode_correct: boolean
     escalation_needed: boolean
     de_escalation_needed: boolean
 
-  # 学习数据
   learning:
-    # 哪些信号被低估了
     underestimated_signals: [keywords, file_types]
-    # 哪些信号被高估了
     overestimated_signals: [keywords, file_types]
 ```
 
 ## 反馈收集时机
 
-1. **任务完成时** - 记录实际vs评估
-2. **模式切换时** - 记录切换原因
-3. **用户纠正时** - 用户说"这个太复杂了"
+1. **任务完成时**：记录实际复杂度和初始评估的差异。
+2. **模式切换时**：记录升级或降级原因。
+3. **用户纠正时**：记录用户指出的复杂度判断偏差。
 
 ## 应用到评估器
 
@@ -56,13 +50,12 @@ feedback_record:
 def calculate_confidence(request):
     base_score = keyword_analysis(request)
 
-    # 应用历史学习
     similar_tasks = find_similar_historical_tasks(request)
     for task in similar_tasks:
         if task.accuracy.mode_correct:
-            base_score *= 1.1  # 更信任
+            base_score *= 1.1
         else:
-            base_score *= 0.9  # 降低权重
+            base_score *= 0.9
 
     return normalize(base_score)
 ```
@@ -72,10 +65,12 @@ def calculate_confidence(request):
 每月运行一次分析：
 
 ```bash
-# 生成准确度报告
-$ skills-admin analyze-accuracy
+skills-admin analyze-accuracy
+```
 
-# 输出示例
+输出示例：
+
+```text
 Quick mode accuracy: 92%
 Normal mode accuracy: 78%
 Deep mode accuracy: 85%

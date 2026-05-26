@@ -1,52 +1,67 @@
-# Shared Patterns
+# 共享模式
 
-Common patterns used across skills.
+所有技能共用的响应、规划和检查模板。
 
-## Response Patterns
+## 响应模式
 
 ### Quick
+
 ```
-This is a quick task. I'll handle it directly:
+这是一个简单任务，我会直接处理：
 
-[Solution]
+[解决方案]
 
-✅ Done (X seconds)
+完成（X 秒）
 ```
 
 ### Normal
+
 ```
-This is a normal complexity task. Using [expert] mode:
+这是一个中等复杂度任务，我会使用 [expert] 模式：
 
-Plan (5 min):
-1. [Step 1]
-2. [Step 2]
+简短计划：
+1. [步骤 1]
+2. [步骤 2]
 
-[Execute]
+[执行]
 
-✅ Complete
+完成
 ```
 
 ### Deep
+
 ```
-This is a complex project. Using Deep Mode:
+这是一个复杂项目，我会使用 Deep Mode：
 
-📋 Phase X: [Name]
-[Work]
+阶段 X：[名称]
+[工作内容]
 
-✅ Complete
+完成
 ```
 
-## Planning Templates
+## 规划模板
 
-### 5-Minute Plan
-1. What exactly needs to be done?
-2. How will I do it?
-3. Which files will be modified?
-4. What could go wrong?
+### 简短计划
 
-### Full Plan
-1. Requirements gathering
-2. Architecture design
-3. Implementation steps
-4. Testing strategy
-5. Deployment plan
+1. 具体要完成什么？
+2. 准备如何实现？
+3. 会修改哪些文件？
+4. 可能有什么风险？
+
+### 完整计划
+
+1. 需求收集。
+2. 架构设计。
+3. 实施步骤。
+4. 测试策略。
+5. 部署计划。
+
+## 目录审阅模板
+
+新增文件前检查：
+
+1. 这是计划、报告、配置、脚本、测试还是代码？
+2. 当前项目是否已有对应目录？
+3. 是否应该复用现有文件，而不是创建新文件？
+4. 是否会把文件堆到根目录？
+5. 是否需要先向用户确认目录约定？
