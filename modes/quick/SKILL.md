@@ -1,6 +1,6 @@
 ---
 name: quick-mode
-description: Quick execution mode for simple tasks under 10 minutes. No planning, no coordination, direct execution.
+description: 简单任务的快速执行模式，适用于 10 分钟内完成的任务；无需规划、协调或额外文档。
 triggers:
   - complexity: simple
   - estimated_time: <10min
@@ -9,70 +9,77 @@ triggers:
 
 # Quick Mode
 
-## Purpose
+## 目的
 
-Zero-overhead execution for trivial tasks. No planning, no coordination, no documentation.
+用于低开销处理简单任务。能直接完成时，不启动复杂流程，不创建多余文档。
 
-## When to Use
+## 适用场景
 
-- Single command or question
-- Under 20 lines of code
-- Existing solution available
-- No design decisions needed
-- One file affected
+- 单个命令或单个问题。
+- 少于 20 行代码。
+- 已有明确解决方案。
+- 不需要设计决策。
+- 通常只影响 1 个文件。
 
-## Execution Flow
-
-```
-User Request → Direct Execution → ✅ Done
-```
-
-## Response Pattern
+## 执行流程
 
 ```
-This is a quick task. I'll handle it directly:
-
-[Direct solution]
-
-✅ Done (X seconds)
+用户请求 → 直接执行 → 完成
 ```
 
-## Rules
+## 响应模板
 
-1. **No planning** - Execute immediately
-2. **No experts** - Use your own capability
-3. **No documentation** - Beyond minimal inline comments
-4. **No tests** - Unless explicitly requested
-5. **Single action** - No branching workflows
+```
+这是一个简单任务，我会直接处理：
 
-## Escalation Triggers
+[直接解决方案]
 
-During execution, escalate to Normal mode if:
-- Files affected > 1
-- Execution time > 10 minutes
-- User asks follow-up requiring new files
-- Complexity discovered higher than expected
+完成（X 秒）
+```
 
-Escalation phrase: `⬆️ Escalating to Normal mode: [reason]`
+## 规则
 
-## Examples
+1. 不做正式规划，直接处理。
+2. 不启用专家协调。
+3. 不创建额外文档。
+4. 除非用户要求，否则不新增测试。
+5. 保持单一路径，避免展开分支工作流。
 
-### ✅ Good Quick Tasks
-- "How to print in Python?"
-- "Fix this typo"
-- "Run the tests"
-- "Explain this error"
-- "Format this file"
+## 升级触发条件
 
-### ❌ Not for Quick Mode
-- "Add user authentication"
-- "Design a database schema"
-- "Refactor the codebase"
+执行中发现以下情况时，升级到 Normal Mode：
 
-## Output Format
+- 影响文件超过 1 个。
+- 执行时间预计超过 10 分钟。
+- 用户追加需求且需要新文件。
+- 实际复杂度高于初始判断。
 
-Keep responses minimal:
-- Code: Just the fix
-- Questions: Direct answer
-- Errors: Root cause + fix
-- No meta-commentary about the process
+升级说明模板：
+
+```
+升级到 Normal Mode：原因
+```
+
+## 示例
+
+### 适合 Quick Mode
+
+- “Python 怎么打印？”
+- “修复这个错别字。”
+- “运行测试。”
+- “解释这个错误。”
+- “格式化这个文件。”
+
+### 不适合 Quick Mode
+
+- “添加用户认证。” → 使用 Normal 或 Deep Mode。
+- “设计数据库结构。” → 使用 Normal 或 Deep Mode。
+- “重构整个代码库。” → 使用 Deep Mode。
+
+## 输出要求
+
+保持简洁：
+- 代码问题：直接给出修复。
+- 概念问题：直接回答。
+- 错误问题：说明根因和修复方式。
+- 不输出无关流程说明。

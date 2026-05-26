@@ -1,6 +1,6 @@
 ---
 name: normal-mode
-description: Standard execution mode for moderate tasks (10 minutes - 4 hours). Brief planning, 1-2 experts, focused execution.
+description: 中等复杂度任务的标准执行模式，适用于 10 分钟到 4 小时内完成的任务；简短规划，启用 1-2 个专家，聚焦执行。
 triggers:
   - complexity: moderate
   - estimated_time: 10min-4hr
@@ -9,104 +9,118 @@ triggers:
 
 # Normal Mode
 
-## Purpose
+## 目的
 
-Balanced approach for single features or bug fixes. Brief planning, focused execution, minimal overhead.
+用于单一功能、组件或明确 bug 修复。先做简短规划，再集中执行，避免过度流程化。
 
-## When to Use
+## 适用场景
 
-- 1-3 files affected
-- Single feature or component
-- Clear requirements
-- Existing codebase context
-- Estimated 10 min - 4 hours
+- 影响 1-3 个文件。
+- 单一功能或组件。
+- 需求清晰。
+- 已有代码库上下文。
+- 预计 10 分钟到 4 小时完成。
 
-## Execution Flow
+## 执行流程
 
 ```
-User Request
+用户请求
     ↓
-5-Min Planning
+简短规划
     ↓
-Load Expert(s)
+加载专家
     ↓
-Execute
+执行
     ↓
-Quick Review
+快速审查
     ↓
-✅ Complete
+完成
 ```
 
-## Response Pattern
+## 响应模板
 
 ```
-This is a normal complexity task. Using [expert] mode:
+这是一个中等复杂度任务，我会使用 [expert] 模式：
 
-Plan (5 min):
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
+简短计划：
+1. [步骤 1]
+2. [步骤 2]
+3. [步骤 3]
 
-[Execute...]
+[执行]
 
-✅ Complete
+完成
 ```
 
-## Expert Selection
+## 专家选择
 
-| Task Type | Primary Expert | Secondary |
-|-----------|---------------|-----------|
-| UI component | Frontend | Designer |
-| API endpoint | Backend | QA |
-| Database query | Backend | Architect |
-| Form validation | Frontend | QA |
-| Bug fix | Domain expert | QA |
+| 任务类型 | 主专家 | 辅助专家 |
+|----------|--------|----------|
+| UI 组件 | Dev | Designer |
+| API 接口 | Dev | QA |
+| 数据库查询 | Dev | Architect |
+| 表单校验 | Dev | QA |
+| Bug 修复 | 领域专家 | QA |
 
-## Planning Template (5 minutes)
+## 简短规划模板
 
 ```
-1. Understanding: What exactly needs to be done?
-2. Approach: How will I do it?
-3. Files: Which files will be modified?
-4. Risks: What could go wrong?
+1. 理解：具体要完成什么？
+2. 方法：准备如何实现？
+3. 文件：会修改哪些文件？
+4. 风险：可能出什么问题？
 ```
 
-## Rules
+## 规则
 
-1. **Brief planning only** - 5 minutes max
-2. **1-2 experts max** - No full team
-3. **Focus on execution** - Less talk, more code
-4. **Minimal documentation** - README update if needed
-5. **Quick sanity check** - Self-review before completion
+1. 只做简短规划，不扩大范围。
+2. 最多启用 1-2 个专家。
+3. 聚焦执行，减少说明性文字。
+4. 只在必要时更新 README 或相关文档。
+5. 完成前做快速自检。
 
-## Mode Transitions
+## 模式切换
 
-### Escalate to Deep if:
-- Files affected > 5
-- Architecture decisions emerge
-- Integration complexity discovered
-- Timeline extends > 4 hours
-- Requires > 2 experts
+### 升级到 Deep Mode
 
-Escalation phrase: `⬆️ Escalating to Deep mode: [reason]`
+触发条件：
+- 影响文件超过 5 个。
+- 出现架构决策。
+- 发现复杂集成。
+- 预计超过 4 小时。
+- 需要超过 2 个专家。
 
-### De-escalate to Quick if:
-- Task simpler than expected
-- Only 1 file affected
-- Solution < 20 lines
-- Completed in < 10 min
+说明模板：
 
-De-escalation phrase: `⬇️ Completing as Quick mode: [reason]`
+```
+升级到 Deep Mode：原因
+```
 
-## Examples
+### 降级到 Quick Mode
 
-### ✅ Good Normal Tasks
-- "Add email validation to the form"
-- "Create a user list API"
-- "Fix this React component bug"
-- "Optimize this database query"
-- "Add CSV export feature"
+触发条件：
+- 任务比预期简单。
+- 只影响 1 个文件。
+- 解决方案少于 20 行。
+- 10 分钟内完成。
 
-### ❌ Not for Normal Mode
-- "Build an e-commerce platform" → Use Deep Mode
-- "How do I print?" → Use Quick Mode
+说明模板：
+
+```
+按 Quick Mode 完成：原因
+```
+
+## 示例
+
+### 适合 Normal Mode
+
+- “给表单加邮箱校验。”
+- “创建用户列表 API。”
+- “修复这个 React 组件 bug。”
+- “优化这个数据库查询。”
+- “增加 CSV 导出功能。”
+
+### 不适合 Normal Mode
+
+- “构建电商平台。” → 使用 Deep Mode。
+- “怎么打印？” → 使用 Quick Mode。

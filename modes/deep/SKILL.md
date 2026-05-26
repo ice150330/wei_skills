@@ -1,6 +1,6 @@
 ---
 name: deep-mode
-description: Deep execution mode for complex tasks (4+ hours). Full planning, all 7 experts, phased execution with quality gates.
+description: 复杂任务的深度执行模式，适用于 4 小时以上任务；完整规划，多专家协作，按阶段设置质量门禁。
 triggers:
   - complexity: complex
   - estimated_time: 4hr+
@@ -9,181 +9,175 @@ triggers:
 
 # Deep Mode
 
-## Purpose
+## 目的
 
-Comprehensive approach for complex projects. Full planning, expert collaboration, phased execution with quality gates.
+用于复杂项目、跨模块改造或新项目建设。先完整规划，再分阶段执行，并在关键节点进行质量检查。
 
-## When to Use
+## 适用场景
 
-- 4+ files or new project
-- Architecture decisions required
-- Multiple components/integration
-- Unclear or evolving requirements
-- Estimated 4+ hours
+- 影响 4+ 个文件或创建新项目。
+- 需要架构决策。
+- 涉及多个组件或系统集成。
+- 需求不清晰或持续变化。
+- 预计 4 小时以上完成。
 
-## Execution Flow
+## 执行流程
 
 ```
-User Request
+用户请求
     ↓
-Phase 1: Requirements & Design (PM, Architect, Designer)
+阶段 1：需求与设计（PM、Architect、Designer）
     ↓
-Phase 2: Implementation (Frontend, Backend, QA parallel)
+阶段 2：实现（Dev、QA 并行准备）
     ↓
-Phase 3: Quality Assurance (QA deep review)
+阶段 3：质量保证（QA 深度审查）
     ↓
-Phase 4: Deployment (DevOps)
+阶段 4：部署（DevOps）
     ↓
-✅ Complete
+完成
 ```
 
-## Response Pattern
+## 响应模板
 
 ```
-This is a complex project. Using Deep Mode with full planning:
+这是一个复杂项目，我会使用 Deep Mode 进行完整规划：
 
-📋 Phase 1: Requirements & Design
-   🎯 PM: Clarify requirements
-   🏗️ Architect: Design system
-   🎨 Designer: Create UI/UX
+阶段 1：需求与设计
+   PM：澄清需求
+   Architect：设计系统
+   Designer：设计 UI/UX
 
-📋 Phase 2: Implementation
-   ⚡ Frontend: Build UI
-   🔧 Backend: Build API
-   🧪 QA: Write tests
+阶段 2：实现
+   Dev：实现功能
+   QA：准备测试
 
-📋 Phase 3: Quality Assurance
-   🧪 QA: Code review & testing
+阶段 3：质量保证
+   QA：代码审查与测试
 
-📋 Phase 4: Deployment
-   🚀 DevOps: Deploy to production
+阶段 4：部署
+   DevOps：部署与运维检查
 
-[Begin Phase 1...]
+[开始阶段 1]
 ```
 
-## Phase Details
+## 阶段细节
 
-### Phase 1: Requirements & Design
+### 阶段 1：需求与设计
 
-**Duration:** 30-60 minutes
-**Experts:** PM, Architect, Designer
+**时长：** 30-60 分钟  
+**专家：** PM、Architect、Designer
 
-```
-PM outputs:
-- Feature specification
-- User stories
-- Acceptance criteria
+输出：
+- PM：功能规格、用户故事、验收标准。
+- Architect：系统设计、API 合约、数据模型。
+- Designer：线框图、设计系统、必要的高保真稿。
 
-Architect outputs:
-- System design
-- API contracts
-- Database schema
+### 阶段 2：实现
 
-Designer outputs:
-- Wireframes
-- Design system
-- Mockups (if needed)
-```
+**时长：** 根据范围决定  
+**专家：** Dev、QA
 
-### Phase 2: Implementation
+并行工作：
+- Dev：组件、API、业务逻辑实现。
+- QA：测试用例准备。
 
-**Duration:** Variable based on scope
-**Experts:** Frontend, Backend, QA
+同步点：
+- API 合约确认。
+- 集成测试确认。
 
-```
-Parallel work streams:
-- Frontend: Component development
-- Backend: API implementation
-- QA: Test case preparation
+### 阶段 3：质量保证
 
-Sync points:
-- API contract validation
-- Integration testing
-```
+**时长：** 约占总时间 20%  
+**专家：** QA
 
-### Phase 3: Quality Assurance
+活动：
+- 代码审查。
+- 单元测试和集成测试。
+- 安全检查。
+- 性能检查。
 
-**Duration:** 20% of total time
-**Experts:** QA
+### 阶段 4：部署
 
-```
-Activities:
-- Code review
-- Unit/integration testing
-- Security review
-- Performance check
-```
+**时长：** 30-60 分钟  
+**专家：** DevOps
 
-### Phase 4: Deployment
+活动：
+- 环境配置。
+- CI/CD 流水线。
+- 监控配置。
+- 回滚方案。
 
-**Duration:** 30-60 minutes
-**Experts:** DevOps
+## 专家协调
 
-```
-Activities:
-- Environment setup
-- CI/CD pipeline
-- Monitoring configuration
-- Rollback plan
-```
-
-## Expert Coordination
-
-### Communication Flow
+### 通信流
 
 ```
 PM ↔ Architect ↔ Designer
-     ↕
-Frontend ↔ Backend
-     ↕
-    QA
-     ↕
-  DevOps
+       ↕
+      Dev
+       ↕
+      QA
+       ↕
+    DevOps
 ```
 
-### Sync Points
+### 同步点
 
-1. **After Phase 1** - Design review with all experts
-2. **Mid Phase 2** - Integration checkpoint
-3. **Before Phase 3** - Feature complete review
-4. **Before Phase 4** - Go/no-go decision
+1. 阶段 1 后：全体设计审查。
+2. 阶段 2 中：集成检查点。
+3. 阶段 3 前：功能完成审查。
+4. 阶段 4 前：上线或交付决策。
 
-## Rules
+## 规则
 
-1. **Complete planning first** - No jumping to code
-2. **Document everything** - ADRs, API docs, README
-3. **Quality gates** - Each phase must complete before next
-4. **Regular sync** - Don't let experts work in silos
-5. **User checkpoints** - Confirm direction at key points
+1. 先完成规划，再开始实现。
+2. 必要文档放入正确目录，不堆根目录。
+3. 每个阶段完成后再进入下一阶段。
+4. 不让专家孤立工作，关键节点同步。
+5. 在方向性决策上与用户确认。
 
-## Mode Transitions
+## 模式切换
 
-### De-escalate to Normal if:
-- Task simpler than initial assessment
-- Clear solution emerges early
-- No architecture changes needed
-- Can be completed by 1-2 experts
-- Timeline < 4 hours
+### 降级到 Normal Mode
 
-De-escalation phrase: `⬇️ Switching to Normal mode: [reason]`
+触发条件：
+- 任务比初始判断简单。
+- 早期出现明确解决方案。
+- 不需要架构变化。
+- 1-2 个专家即可完成。
+- 预计少于 4 小时。
 
-### Reassess if:
-- Scope significantly changes
-- New requirements emerge
-- Technical blockers found
-- Timeline estimates were wrong
+说明模板：
 
-Reassessment phrase: `🔄 Reassessing complexity...`
+```
+切换到 Normal Mode：原因
+```
 
-## Examples
+### 重新评估
 
-### ✅ Good Deep Tasks
-- "Build an e-commerce platform"
-- "Refactor the authentication system"
-- "Design a real-time chat feature"
-- "Create a new mobile app"
-- "Migrate to microservices"
+触发条件：
+- 范围明显变化。
+- 出现新需求。
+- 发现技术阻塞。
+- 时间估算明显不准。
 
-### ❌ Not for Deep Mode
-- "Fix this bug" → Use Normal Mode
-- "How do I..." → Use Quick Mode
+说明模板：
+
+```
+重新评估复杂度：原因
+```
+
+## 示例
+
+### 适合 Deep Mode
+
+- “构建电商平台。”
+- “重构认证系统。”
+- “设计实时聊天功能。”
+- “创建新的移动应用。”
+- “迁移到微服务。”
+
+### 不适合 Deep Mode
+
+- “修复这个 bug。” → 使用 Normal Mode。
+- “怎么做……” → 使用 Quick Mode。
