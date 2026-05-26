@@ -1,46 +1,42 @@
-# 遗留技能 (Legacy Skills)
+# 归档技能
 
-## 说明
+这些技能是在 v3.0 简化过程中移出活跃路由的旧版内容，仅作为历史参考保留。
 
-此目录包含旧版技能，保持兼容性。新架构将逐步取代这些技能。
+## 3.2 路由说明
 
-## 技能列表
+`archive/` 下的内容不参与当前 `3.2` 技能路由。当前活跃架构以 `registry.yaml` 为准：
 
-| 旧技能 | 新替代 | 状态 |
-|--------|--------|------|
-| `core-workflow` | `standard-workflow` / `full-workflow` | 可用，建议迁移 |
-| `code-quality` | 整合进各角色工作流程 | 可用，建议迁移 |
-| `safe-operations` | 整合进 DevOps/QA 角色 | 可用，建议迁移 |
-| `ui-ux-design` | `designer` 角色 | 可用，建议迁移 |
-| `project-dev-workflow` | `full-workflow` | 可用，建议迁移 |
-
-## 迁移指南
-
-### 旧用法
 ```
-/use skill project-dev-workflow
+root-directives → assessor → modes → experts
 ```
 
-### 新用法
-```
-# 让系统自动选择
-"开发一个电商平台"
-→ 自动选择 full-workflow
+如需恢复旧技能，必须先迁移到当前目录结构并更新 `registry.yaml`。
 
-# 或手动指定
-/use skill full-workflow
-```
+## 已移除技能
 
-## 兼容性保证
+| 旧技能 | 移除原因 | 当前替代 |
+|--------|----------|----------|
+| `project-dev-workflow` | 与 Deep Mode 重复 | `modes/deep/` |
+| `_core/complexity-assessor` | 已重命名并升级 | `assessor/` |
+| `_workflows/simple` | 已重命名 | `modes/quick/` |
+| `_workflows/standard` | 已重命名 | `modes/normal/` |
+| `_workflows/full` | 已重命名 | `modes/deep/` |
+| `_roles/frontend` | 已合并 | `experts/dev/` |
+| `_roles/backend` | 已合并 | `experts/dev/` |
+| `_roles/*` | 已重命名 | `experts/*` |
+| `core-workflow` | 已废弃 | 使用 `modes/` |
+| `code-quality` | 已合并 | `experts/qa/` |
+| `safe-operations` | 已合并 | `experts/devops/` |
+| `ui-ux-design` | 已合并 | `experts/designer/` |
 
-- ✅ 旧技能仍然可用
-- ✅ 现有触发器继续工作
-- ⚠️ 新功能优先在新架构实现
-- 📅 旧技能将在 v3.0 后逐步淘汰
+## 移除原因
 
-## 建议
+1. 层级过多：旧架构层级复杂，当前架构简化为 `root-directives → assessor → modes → experts`。
+2. 功能重叠：`project-dev-workflow` 与 `modes/deep` 重复。
+3. 边界不清：Frontend/Backend 拆分对当前工作流不是必需，已合并到 Dev。
+4. 命名不一致：移除 `_prefix` 风格，统一目录名。
+5. 文档膨胀：把快速入口合并到主 README。
 
-新项目建议使用新架构：
-- `_core/complexity-assessor` - 复杂度评估
-- `_workflows/simple|standard|full` - 分层工作流
-- `_roles/*` - 独立角色
+## 迁移原则
+
+如果需要引用旧技能，请只把必要规则迁移到当前活跃技能中，不要直接把归档目录重新加入路由。
